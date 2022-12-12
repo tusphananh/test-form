@@ -19,7 +19,6 @@ import { Dropbox } from "dropbox";
 const dropbox = new Dropbox({
   accessToken: process.env.REACT_APP_DROPBOX_ACCESS_TOKEN,
 });
-
 const defaultAudioDetails = {
   url: null,
   blob: null,
@@ -193,22 +192,6 @@ function App() {
     onSuccess();
   };
 
-  useEffect(() => {
-    console.log(audioDetails);
-  }, [audioDetails]);
-
-  useEffect(() => {
-    console.log(checkBoxValue);
-  }, [checkBoxValue]);
-
-  useEffect(() => {
-    console.log(radioValue);
-  }, [radioValue]);
-
-  useEffect(() => {
-    console.log(studentValue);
-  }, [studentValue]);
-
   return (
     <div className="App">
       {contextHolder}
@@ -216,6 +199,35 @@ function App() {
         Perception and production of English initial aspirated plosives /p-t-k/
         by International University students
       </Typography.Title>
+      <Typography>
+        <Typography.Text strong>Title of Research Project: </Typography.Text>
+        Perception and production of English initial aspirated plosives /p-t-k/
+        by International University students
+        <br />
+        <Typography.Text strong>
+          {" "}
+          Name of Principal Investigator:
+        </Typography.Text>{" "}
+        Trần Ngọc Hồng Phúc Email of Principal
+        <br />
+        <Typography.Text strong> Investigator:</Typography.Text>
+        ENENIU18129@student.hcmiu.edu.vn
+        <br />
+        <Typography.Text strong>
+          Phone number of Principal Investigator:
+        </Typography.Text>{" "}
+        (+84)0773772468
+        <br />
+        <Typography.Text strong>
+          Facebook of Principal Investigator:
+        </Typography.Text>
+        <Typography.Link href="https://www.facebook.com/profile.php?id=100009424078664">
+          Bông Omega
+        </Typography.Link>
+        <br />
+        If you have any question, please feel free to contact me with the
+        provided information above
+      </Typography>
       <Divider orientation="left">Student Information</Divider>
       <div className="form">
         {Object.keys(formKeys).map((key) => {
