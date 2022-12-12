@@ -162,12 +162,15 @@ function App() {
     };
 
     try {
-      const formRes = await axios.post(`${process.env.REACT_APP_API_URL}`, {
-        body: JSON.stringify(databody),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const formRes = await axios.post(
+        `${process.env.REACT_APP_API_URL}/records`,
+        {
+          body: JSON.stringify(databody),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
     } catch (error) {
       console.log(error);
       onError();
