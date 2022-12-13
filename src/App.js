@@ -187,6 +187,7 @@ function App() {
         path: `/${studentValue.studentId}/${index}.webm`,
         contents: file,
       };
+
       const response = await dropbox.filesUpload(params);
       if (response.status !== 200) {
         onError();
@@ -206,9 +207,10 @@ function App() {
         by International University students
       </Typography.Title>
       <Typography.Text strong>
-        this will constitute your electronic signature for agreeing to
+        This will constitute your electronic signature for agreeing to
         participate in the research
       </Typography.Text>
+      <br />
       <Typography.Text>
         You can find the link to the full version of the consent form via the
         link attached :
