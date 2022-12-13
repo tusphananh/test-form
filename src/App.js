@@ -15,8 +15,11 @@ import { Dropbox } from "dropbox";
 import { useState } from "react";
 import "./App.scss";
 import SimpleRecord from "./SimpleRecord/SimpleRecord";
+
+const REACT_APP_DROPBOX_ACCESS_TOKEN =
+  "sl.BU11niasD_k6pHD25omF_MBPLHtYyhzSPnMGiFAlBXMwcPRVxOsmsh1wHlGb0iDOJhZl1EClhckYU1DyYRd5IHkNEAA4P7HmibixdkkJ-vHCWG0y5kZywhSHiouEGnxqEYrnwWQ2sdSO";
 const dropbox = new Dropbox({
-  accessToken: process.env.REACT_APP_DROPBOX_ACCESS_TOKEN,
+  accessToken: REACT_APP_DROPBOX_ACCESS_TOKEN,
 });
 const defaultAudioDetails = {
   url: null,
@@ -204,6 +207,12 @@ function App() {
         Perception and production of English initial aspirated plosives /p-t-k/
         by International University students
       </Typography.Title>
+      <Typography.Title level={3}>
+        Please fill this Consent Form
+      </Typography.Title>
+      <Typography.Link href="https://l.facebook.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1SEtFwrxFMnDG57zRiPLhT7eE8Cd5trIQXDnLMdrC5k0%2Fedit&h=AT2Zeej-gNkOOQljklB0xPQPorDPsIEVakXKa5xx_zB5pUynqv-6fjyr51-c7QkJjLbNMmHu2x-kd8WDslYqZw-tkgAiy9D-_Yuexd-1T0TDneWwCaAQB_OTGAmJy5RlkZp8F2CI98w9Kmg&s=1">
+        Consent Form
+      </Typography.Link>
       <Typography>
         <Typography.Text strong>Title of Research Project: </Typography.Text>
         Perception and production of English initial aspirated plosives /p-t-k/
