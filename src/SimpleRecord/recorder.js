@@ -451,7 +451,7 @@
                 this.self = self;
                 this.self.postMessage = function (data) {
                   setTimeout(function () {
-                    _this.onmessage({ data: data });
+                    _this?.onmessage({ data: data });
                   }, 0);
                 };
 
@@ -466,7 +466,7 @@
                     var _this = this;
 
                     setTimeout(function () {
-                      _this.self.onmessage({ data: data });
+                      _this.self?.onmessage({ data: data });
                     }, 0);
                   },
                 },
