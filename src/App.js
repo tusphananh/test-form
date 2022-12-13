@@ -7,6 +7,7 @@ import {
   message,
   Radio,
   Space,
+  Spin,
   Typography,
 } from "antd";
 import axios from "axios";
@@ -69,7 +70,7 @@ function App() {
   const [radioValue, setRadioValue] = useState({});
   const [checkBoxValue, setCheckBoxValue] = useState({});
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [isLoading, setIsLoading] = useState(false);
   const onSuccess = () => {
     messageApi.open({
       type: "success",
@@ -130,10 +131,12 @@ function App() {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (
       Object.keys(radioValue).length !== 8 ||
       Object.keys(checkBoxValue).length !== 8
     ) {
+      setIsLoading(false);
       onWarning();
       return;
     }
@@ -144,12 +147,14 @@ function App() {
       !studentValue.studentId ||
       !studentValue.email
     ) {
+      setIsLoading(false);
       onWarning();
       return;
     }
 
     if (audioDetails.some((item) => !item.audioDetails.blob)) {
       onWarning();
+      setIsLoading(false);
       return;
     }
 
@@ -171,6 +176,7 @@ function App() {
       );
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       onError();
       return;
     }
@@ -188,14 +194,10 @@ function App() {
       }
     });
 
+    setIsLoading(false);
     onSuccess();
   };
 
-  useEffect(() => {
-    console.log("====================================");
-    console.log(audioDetails);
-    console.log("====================================");
-  }, [audioDetails]);
   return (
     <div className="App">
       {contextHolder}
@@ -397,8 +399,7 @@ function App() {
           </Card>
         </Space>
       </div>
-
-      <Button onClick={handleSubmit}>Submit</Button>
+      {isLoading ? <Spin /> : <Button onClick={handleSubmit}>Submit</Button>}
     </div>
   );
 }
