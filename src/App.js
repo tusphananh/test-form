@@ -4,19 +4,17 @@ import {
   Checkbox,
   Divider,
   Input,
-  notification,
+  message,
   Radio,
   Space,
   Typography,
-  message,
 } from "antd";
 import axios from "axios";
+import { Dropbox } from "dropbox";
 import { useEffect, useState } from "react";
 import "react-voice-recorder/dist/index.css";
 import "./App.scss";
-import RecordBar from "./RecordBar";
-import { Dropbox } from "dropbox";
-import SimpleRecord from "./SimpleRecord";
+import SimpleRecord from "./SimpleRecord/SimpleRecord";
 const dropbox = new Dropbox({
   accessToken: process.env.REACT_APP_DROPBOX_ACCESS_TOKEN,
 });
@@ -193,6 +191,11 @@ function App() {
     onSuccess();
   };
 
+  useEffect(() => {
+    console.log("====================================");
+    console.log(audioDetails);
+    console.log("====================================");
+  }, [audioDetails]);
   return (
     <div className="App">
       {contextHolder}
@@ -365,7 +368,7 @@ function App() {
               <li>pack</li>
               <li>passport</li>
             </ul>
-            <RecordBar
+            <SimpleRecord
               id={0}
               audioDetails={
                 audioDetails.find((item) => item.id === 0).audioDetails
@@ -384,7 +387,7 @@ function App() {
               <li>Can I talk to you?</li>
               <li>You gave me cold coffee again.</li>
             </ul>
-            <RecordBar
+            <SimpleRecord
               id={1}
               audioDetails={
                 audioDetails.find((item) => item.id === 1).audioDetails
@@ -394,7 +397,7 @@ function App() {
           </Card>
         </Space>
       </div>
-      <SimpleRecord />
+
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
   );
