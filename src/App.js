@@ -16,6 +16,7 @@ import "react-voice-recorder/dist/index.css";
 import "./App.scss";
 import RecordBar from "./RecordBar";
 import { Dropbox } from "dropbox";
+import SimpleRecord from "./SimpleRecord";
 const dropbox = new Dropbox({
   accessToken: process.env.REACT_APP_DROPBOX_ACCESS_TOKEN,
 });
@@ -393,6 +394,7 @@ function App() {
           </Card>
         </Space>
       </div>
+      <SimpleRecord />
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
   );
