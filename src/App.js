@@ -205,12 +205,18 @@ function App() {
         Perception and production of English initial aspirated plosives /p-t-k/
         by International University students
       </Typography.Title>
-      <Typography.Title level={3}>
-        Please fill this Consent Form
-      </Typography.Title>
-      <Typography.Link href="https://l.facebook.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1SEtFwrxFMnDG57zRiPLhT7eE8Cd5trIQXDnLMdrC5k0%2Fedit&h=AT2Zeej-gNkOOQljklB0xPQPorDPsIEVakXKa5xx_zB5pUynqv-6fjyr51-c7QkJjLbNMmHu2x-kd8WDslYqZw-tkgAiy9D-_Yuexd-1T0TDneWwCaAQB_OTGAmJy5RlkZp8F2CI98w9Kmg&s=1">
-        Consent Form
-      </Typography.Link>
+      <Typography.Text strong>
+        this will constitute your electronic signature for agreeing to
+        participate in the research
+      </Typography.Text>
+      <Typography.Text>
+        You can find the link to the full version of the consent form via the
+        link attached :
+        <Typography.Link href="https://l.facebook.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1SEtFwrxFMnDG57zRiPLhT7eE8Cd5trIQXDnLMdrC5k0%2Fedit&h=AT2Zeej-gNkOOQljklB0xPQPorDPsIEVakXKa5xx_zB5pUynqv-6fjyr51-c7QkJjLbNMmHu2x-kd8WDslYqZw-tkgAiy9D-_Yuexd-1T0TDneWwCaAQB_OTGAmJy5RlkZp8F2CI98w9Kmg&s=1">
+          Consent Form
+        </Typography.Link>
+      </Typography.Text>
+
       <Typography>
         <Typography.Text strong>Title of Research Project: </Typography.Text>
         Perception and production of English initial aspirated plosives /p-t-k/
