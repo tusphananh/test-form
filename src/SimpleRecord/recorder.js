@@ -137,7 +137,7 @@
                 ) {
                   buffer.push(e.inputBuffer.getChannelData(channel));
                 }
-                _this.worker.postMessage({
+                _this.worker?.postMessage({
                   command: "record",
                   buffer: buffer,
                 });
@@ -302,7 +302,7 @@
                 }
               }, self);
 
-              this.worker.postMessage({
+              this.worker?.postMessage({
                 command: "init",
                 config: {
                   sampleRate: this.context.sampleRate,
@@ -336,7 +336,7 @@
                 {
                   key: "clear",
                   value: function clear() {
-                    this.worker.postMessage({ command: "clear" });
+                    this.worker?.postMessage({ command: "clear" });
                   },
                 },
                 {
@@ -347,7 +347,7 @@
 
                     this.callbacks.getBuffer.push(cb);
 
-                    this.worker.postMessage({ command: "getBuffer" });
+                    this.worker?.postMessage({ command: "getBuffer" });
                   },
                 },
                 {
@@ -359,7 +359,7 @@
 
                     this.callbacks.exportWAV.push(cb);
 
-                    this.worker.postMessage({
+                    this.worker?.postMessage({
                       command: "exportWAV",
                       type: mimeType,
                     });
