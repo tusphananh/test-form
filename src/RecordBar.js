@@ -1,5 +1,5 @@
 import React from "react";
-import { Recorder } from "react-voice-recorder";
+import { Recorder } from "./Recorder";
 
 function RecordBar({ id, audioDetails, setAudioDetails }) {
   function handleAudioStop(data) {
