@@ -20,46 +20,62 @@
   }
 })(function () {
   var define, module, exports;
-  return (function e(t, n, r) {
-    function s(o, u) {
-      if (!n[o]) {
-        if (!t[o]) {
-          var a = typeof require == "function" && require;
-          if (!u && a) return a(o, !0);
-          if (i) return i(o, !0);
-          var f = new Error("Cannot find module '" + o + "'");
-          throw ((f.code = "MODULE_NOT_FOUND"), f);
+  return (function () {
+    function r(e, n, t) {
+      function o(i, f) {
+        if (!n[i]) {
+          if (!e[i]) {
+            var c = "function" == typeof require && require;
+            if (!f && c) return c(i, !0);
+            if (u) return u(i, !0);
+            var a = new Error("Cannot find module '" + i + "'");
+            throw ((a.code = "MODULE_NOT_FOUND"), a);
+          }
+          var p = (n[i] = { exports: {} });
+          e[i][0].call(
+            p.exports,
+            function (r) {
+              var n = e[i][1][r];
+              return o(n || r);
+            },
+            p,
+            p.exports,
+            r,
+            e,
+            n,
+            t
+          );
         }
-        var l = (n[o] = { exports: {} });
-        t[o][0].call(
-          l.exports,
-          function (e) {
-            var n = t[o][1][e];
-            return s(n ? n : e);
-          },
-          l,
-          l.exports,
-          e,
-          t,
-          n,
-          r
-        );
+        return n[i].exports;
       }
-      return n[o].exports;
+      for (
+        var u = "function" == typeof require && require, i = 0;
+        i < t.length;
+        i++
+      )
+        o(t[i]);
+      return o;
     }
-    var i = typeof require == "function" && require;
-    for (var o = 0; o < r.length; o++) s(r[o]);
-    return s;
-  })(
+    return r;
+  })()(
     {
       1: [
         function (require, module, exports) {
+          "use strict";
+
           module.exports = require("./recorder").Recorder;
         },
         { "./recorder": 2 },
       ],
       2: [
         function (require, module, exports) {
+          "use strict";
+
+          Object.defineProperty(exports, "__esModule", {
+            value: true,
+          });
+          exports.Recorder = undefined;
+
           var _createClass = (function () {
             function defineProperties(target, props) {
               for (var i = 0; i < props.length; i++) {
@@ -77,11 +93,6 @@
               return Constructor;
             };
           })();
-
-          Object.defineProperty(exports, "__esModule", {
-            value: true,
-          });
-          exports.Recorder = undefined;
 
           var _inlineWorker = require("inline-worker");
 
@@ -111,6 +122,8 @@
               this.recording = false;
               this.callbacks = {
                 getBuffer: [],
+                getCurrentBuffer: [],
+                getAudioLossInfo: [],
                 exportWAV: [],
               };
 
@@ -126,8 +139,33 @@
                 this.config.numChannels
               );
 
+              this.expectedBufferTime =
+                (this.config.bufferLen / this.context.sampleRate) * 1000; // in milliseconds
+              this.audioProcessStartTime = null;
+              this.audioProcessEndTime = null;
+              this.totalNumberOfBuffers = 0;
+              this.lossOccurrences = 0;
+              // default acceptable delay is twice the expected buffer time (ms)
+              this.acceptableDelay =
+                this.config.acceptableDelay == null
+                  ? this.expectedBufferTime * -2
+                  : this.config.acceptableDelay * -1;
               this.node.onaudioprocess = function (e) {
                 if (!_this.recording) return;
+
+                if (_this.audioProcessStartTime) {
+                  _this.totalNumberOfBuffers += 1;
+                  _this.audioProcessEndTime = performance.now();
+
+                  var timeToNewAudioProcess =
+                    _this.audioProcessEndTime - _this.audioProcessStartTime;
+                  var difference =
+                    _this.expectedBufferTime - timeToNewAudioProcess;
+
+                  if (difference < _this.acceptableDelay) {
+                    _this.lossOccurrences += 1;
+                  }
+                }
 
                 var buffer = [];
                 for (
@@ -137,10 +175,12 @@
                 ) {
                   buffer.push(e.inputBuffer.getChannelData(channel));
                 }
-                _this.worker?.postMessage({
+                _this.worker.postMessage({
                   command: "record",
                   buffer: buffer,
                 });
+
+                _this.audioProcessStartTime = performance.now();
               };
 
               source.connect(this.node);
@@ -150,10 +190,11 @@
               this.worker = new _inlineWorker2.default(function () {
                 var recLength = 0,
                   recBuffers = [],
-                  sampleRate = undefined,
-                  numChannels = undefined;
+                  currentBuffer = [],
+                  sampleRate = void 0,
+                  numChannels = void 0;
 
-                self.onmessage = function (e) {
+                this.onmessage = function (e) {
                   switch (e.data.command) {
                     case "init":
                       init(e.data.config);
@@ -166,6 +207,12 @@
                       break;
                     case "getBuffer":
                       getBuffer();
+                      break;
+                    case "getCurrentBuffer":
+                      getCurrentBuffer();
+                      break;
+                    case "getAudioLossInfo":
+                      getAudioLossInfo(e.data.audioLossInfo);
                       break;
                     case "clear":
                       clear();
@@ -182,6 +229,7 @@
                 function record(inputBuffer) {
                   for (var channel = 0; channel < numChannels; channel++) {
                     recBuffers[channel].push(inputBuffer[channel]);
+                    currentBuffer[channel] = inputBuffer[channel];
                   }
                   recLength += inputBuffer[0].length;
                 }
@@ -191,7 +239,7 @@
                   for (var channel = 0; channel < numChannels; channel++) {
                     buffers.push(mergeBuffers(recBuffers[channel], recLength));
                   }
-                  var interleaved = undefined;
+                  var interleaved = void 0;
                   if (numChannels === 2) {
                     interleaved = interleave(buffers[0], buffers[1]);
                   } else {
@@ -200,7 +248,7 @@
                   var dataview = encodeWAV(interleaved);
                   var audioBlob = new Blob([dataview], { type: type });
 
-                  self.postMessage({ command: "exportWAV", data: audioBlob });
+                  this.postMessage({ command: "exportWAV", data: audioBlob });
                 }
 
                 function getBuffer() {
@@ -208,18 +256,38 @@
                   for (var channel = 0; channel < numChannels; channel++) {
                     buffers.push(mergeBuffers(recBuffers[channel], recLength));
                   }
-                  self.postMessage({ command: "getBuffer", data: buffers });
+                  this.postMessage({ command: "getBuffer", data: buffers });
+                }
+
+                function getCurrentBuffer() {
+                  var buffers = [];
+                  for (var channel = 0; channel < numChannels; channel++) {
+                    buffers.push(currentBuffer[channel]);
+                  }
+                  this.postMessage({
+                    command: "getCurrentBuffer",
+                    data: buffers,
+                  });
+                }
+
+                function getAudioLossInfo(audioLossInfo) {
+                  this.postMessage({
+                    command: "getAudioLossInfo",
+                    data: audioLossInfo,
+                  });
                 }
 
                 function clear() {
                   recLength = 0;
                   recBuffers = [];
+                  currentBuffer = [];
                   initBuffers();
                 }
 
                 function initBuffers() {
                   for (var channel = 0; channel < numChannels; channel++) {
                     recBuffers[channel] = [];
+                    currentBuffer[channel] = [];
                   }
                 }
 
@@ -302,7 +370,7 @@
                 }
               }, self);
 
-              this.worker?.postMessage({
+              this.worker.postMessage({
                 command: "init",
                 config: {
                   sampleRate: this.context.sampleRate,
@@ -325,6 +393,7 @@
                   key: "record",
                   value: function record() {
                     this.recording = true;
+                    this.audioProcessStartTime = performance.now();
                   },
                 },
                 {
@@ -336,7 +405,9 @@
                 {
                   key: "clear",
                   value: function clear() {
-                    this.worker?.postMessage({ command: "clear" });
+                    this.totalNumberOfBuffers = 0;
+                    this.lossOccurrences = 0;
+                    this.worker.postMessage({ command: "clear" });
                   },
                 },
                 {
@@ -347,7 +418,35 @@
 
                     this.callbacks.getBuffer.push(cb);
 
-                    this.worker?.postMessage({ command: "getBuffer" });
+                    this.worker.postMessage({ command: "getBuffer" });
+                  },
+                },
+                {
+                  key: "getCurrentBuffer",
+                  value: function getCurrentBuffer(cb) {
+                    cb = cb || this.config.callback;
+                    if (!cb) throw new Error("Callback not set");
+
+                    this.callbacks.getCurrentBuffer.push(cb);
+
+                    this.worker.postMessage({ command: "getCurrentBuffer" });
+                  },
+                },
+                {
+                  key: "getAudioLossInfo",
+                  value: function getAudioLossInfo(cb) {
+                    cb = cb || this.config.callback;
+                    if (!cb) throw new Error("Callback not set");
+
+                    this.callbacks.getAudioLossInfo.push(cb);
+
+                    this.worker.postMessage({
+                      command: "getAudioLossInfo",
+                      audioLossInfo: {
+                        numberOfBuffers: this.totalNumberOfBuffers,
+                        numberOfLosses: this.lossOccurrences,
+                      },
+                    });
                   },
                 },
                 {
@@ -359,7 +458,7 @@
 
                     this.callbacks.exportWAV.push(cb);
 
-                    this.worker?.postMessage({
+                    this.worker.postMessage({
                       command: "exportWAV",
                       type: mimeType,
                     });
@@ -375,10 +474,24 @@
                     );
                     var link = window.document.createElement("a");
                     link.href = url;
-                    link.download = filename || "output.wav";
-                    var click = document.createEvent("Event");
-                    click.initEvent("click", true, true);
-                    link.dispatchEvent(click);
+                    link.download =
+                      filename || new Date().toISOString() + ".wav";
+                    var click = new MouseEvent("click", {
+                      view: window,
+                      bubbles: true,
+                      cancelable: true,
+                    });
+
+                    var cancelled = !link.dispatchEvent(click);
+                    if (cancelled) {
+                      console.log(
+                        "download cancelled: A handler called preventDefault."
+                      );
+                    } else {
+                      console.log(
+                        "download successful: None of the handlers called preventDefault"
+                      );
+                    }
                   },
                 },
               ]
@@ -393,6 +506,8 @@
       ],
       3: [
         function (require, module, exports) {
+          "use strict";
+
           module.exports = require("./inline-worker");
         },
         { "./inline-worker": 4 },
@@ -400,6 +515,8 @@
       4: [
         function (require, module, exports) {
           (function (global) {
+            "use strict";
+
             var _createClass = (function () {
               function defineProperties(target, props) {
                 for (var key in props) {
@@ -451,7 +568,7 @@
                 this.self = self;
                 this.self.postMessage = function (data) {
                   setTimeout(function () {
-                    _this?.onmessage({ data: data });
+                    _this.onmessage({ data: data });
                   }, 0);
                 };
 
@@ -466,7 +583,7 @@
                     var _this = this;
 
                     setTimeout(function () {
-                      _this.self?.onmessage({ data: data });
+                      _this.self.onmessage({ data: data });
                     }, 0);
                   },
                 },
