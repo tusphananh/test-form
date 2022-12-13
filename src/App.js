@@ -12,8 +12,7 @@ import {
 } from "antd";
 import axios from "axios";
 import { Dropbox } from "dropbox";
-import { useEffect, useState } from "react";
-import "react-voice-recorder/dist/index.css";
+import { useState } from "react";
 import "./App.scss";
 import SimpleRecord from "./SimpleRecord/SimpleRecord";
 const dropbox = new Dropbox({
