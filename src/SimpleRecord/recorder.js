@@ -1,10 +1,9 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 (function (f) {
   if (typeof exports === "object" && typeof module !== "undefined") {
     module.exports = f();
-    // eslint-disable-next-line no-undef
   } else if (typeof define === "function" && define.amd) {
-    // eslint-disable-next-line no-undef
     define([], f);
   } else {
     var g;
@@ -55,16 +54,12 @@
     {
       1: [
         function (require, module, exports) {
-          "use strict";
-
           module.exports = require("./recorder").Recorder;
         },
         { "./recorder": 2 },
       ],
       2: [
         function (require, module, exports) {
-          "use strict";
-
           var _createClass = (function () {
             function defineProperties(target, props) {
               for (var i = 0; i < props.length; i++) {
@@ -398,8 +393,6 @@
       ],
       3: [
         function (require, module, exports) {
-          "use strict";
-
           module.exports = require("./inline-worker");
         },
         { "./inline-worker": 4 },
@@ -407,8 +400,6 @@
       4: [
         function (require, module, exports) {
           (function (global) {
-            "use strict";
-
             var _createClass = (function () {
               function defineProperties(target, props) {
                 for (var key in props) {
