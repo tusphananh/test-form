@@ -16,10 +16,8 @@ import { useState } from "react";
 import "./App.scss";
 import SimpleRecord from "./SimpleRecord/SimpleRecord";
 
-const REACT_APP_DROPBOX_ACCESS_TOKEN =
-  "sl.BU11niasD_k6pHD25omF_MBPLHtYyhzSPnMGiFAlBXMwcPRVxOsmsh1wHlGb0iDOJhZl1EClhckYU1DyYRd5IHkNEAA4P7HmibixdkkJ-vHCWG0y5kZywhSHiouEGnxqEYrnwWQ2sdSO";
 const dropbox = new Dropbox({
-  accessToken: REACT_APP_DROPBOX_ACCESS_TOKEN,
+  accessToken: process.env.REACT_APP_DROPBOX_ACCESS_TOKEN,
 });
 const defaultAudioDetails = {
   url: null,
