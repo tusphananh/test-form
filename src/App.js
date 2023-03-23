@@ -38,20 +38,18 @@ const formKeys = {
 
 const radioQuestions = [
   ["bear", "pear"],
-  ["past", "fast"],
-  ["taught", "thought"],
+  ["past", "bast"],
   ["tie", "die"],
   ["cold", "gold"],
   ["game", "came"],
   ["down", "town"],
-  ["chest", "test"],
 ];
 
 // Create 8 question with  [
 //   { lable: "A", value: "a" },
 //   { lable: "B", value: "b" },
 // ],
-const checkBoxQuestions = Array.from({ length: 8 }, (v, i) => {
+const checkBoxQuestions = Array.from({ length: 6 }, (v, i) => {
   return [
     { label: "A", value: "a" },
     { label: "B", value: "b" },
@@ -272,7 +270,7 @@ function App() {
       </Typography>
       <audio className="section-audio" controls>
         <source
-          src="https://dl.dropbox.com/s/4d9veasrzng7c07/Section%201.mp3?dl=0"
+          src="https://dl.dropbox.com/s/m78z61zlbip1tp1/1.mp3?dl=0"
           type="audio/mpeg"
         />
       </audio>
@@ -326,7 +324,7 @@ function App() {
       </Typography>
       <audio className="section-audio" controls>
         <source
-          src="https://dl.dropbox.com/s/l5m34jgpys2upil/Section%202.mp3?dl=0"
+          src="https://dl.dropbox.com/s/yps2mcqkbawi8mg/2.mp3?dl=0"
           type="audio/mpeg"
         />
       </audio>
@@ -357,7 +355,7 @@ function App() {
           );
         })}
       </div>
-      <Divider orientation="left">Section 2</Divider>
+      <Divider orientation="left">Section 3</Divider>
       <Typography>
         Đây là link Fb mình:
         <br />
